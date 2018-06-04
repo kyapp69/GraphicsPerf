@@ -10,9 +10,6 @@ public class MiniProfiler : MonoBehaviour
 {
     public bool m_Enable = true;
 	public Texture2D bktex;
-    //Button
-    bool btn_prev = false;
-    bool btn_next = false;
 
     private int frameCount = 0;
     private const int kAverageFrameCount = 32;
@@ -60,7 +57,8 @@ public class MiniProfiler : MonoBehaviour
     {
 		Application.targetFrameRate = 999;
         QualitySettings.vSyncCount = 0;
-        Screen.SetResolution(1920, 1080, true);
+        //Screen.SetResolution(1920, 1080, true);
+        Screen.fullScreen = false;
 
         for (int i=0;i<recordersList.Length;i++)
         {
@@ -143,11 +141,11 @@ public class MiniProfiler : MonoBehaviour
     {
         if (m_Enable)
         {
-			GUI.skin.label.fontSize = 20;
+			GUI.skin.label.fontSize = 17;
 			GUI.skin.box.normal.background = bktex;
 			GUI.backgroundColor = new Color(0, 0, 0, .80f);
 			GUI.color = new Color(1, 1, 1, 1);
-            float w = 800, h = 50 + (recordersList.Length+25) * GUI.skin.label.fontSize + 8;
+            float w = 800, h = 50 + (recordersList.Length+35) * GUI.skin.label.fontSize + 8;
             GUILayout.BeginArea(new Rect(32, 50, w, h), GUI.skin.box);
 
             //Info ===============================================================
@@ -157,11 +155,34 @@ public class MiniProfiler : MonoBehaviour
             if(GUILayout.Button("Next")) NextScene();
 			GUILayout.EndHorizontal();
 
+            GUILayout.BeginHorizontal();
             GUILayout.Label(
-                "Screen name: "+SceneManager.GetActiveScene().name+"\n"+
-                "Screen resolution: "+Screen.width+" x "+Screen.height+"\n"+
-                "VSyncCount: "+QualitySettings.vSyncCount+"\n"
+                "Scene name: \n"+
+                "Screen resolution: \n"+
+                "VSyncCount: \n"+
+                "Unity : \n"+
+                "Device : \n"+
+                "OS : \n"+
+                "CPU : \n"+
+                "GPU : \n"+
+                //"GPU Version : \n"+
+                "Platform / API : \n"
                 );
+
+            GUILayout.Label(
+                SceneManager.GetActiveScene().name+"\n"+
+                Screen.width+" x "+Screen.height+"\n"+
+                QualitySettings.vSyncCount+"\n"+
+                Application.unityVersion + "\n"+
+                SystemInfo.deviceModel + "\n"+
+                SystemInfo.operatingSystem + "\n"+
+                SystemInfo.processorType + "\n"+
+                SystemInfo.graphicsDeviceName + "\n"+
+                //SystemInfo.graphicsDeviceVersion + "\n"+
+                Application.platform.ToString() + " / "+ SystemInfo.graphicsDeviceType + "\n"
+                );
+
+            GUILayout.EndHorizontal();
 
 			//FPS ================================================================
             GUI.skin.label.fontSize = 13;
@@ -173,7 +194,7 @@ public class MiniProfiler : MonoBehaviour
 			);
 
 			//Real FPS============================================================
-            GUI.skin.label.fontSize = 20;
+            GUI.skin.label.fontSize = 17;
 			GUILayout.Label(
 			"<b>Current FPS - Ignored*</b> : "+
 			System.String.Format("{0:F2} FPS ({1:F2}ms)", 1.0f / (m_CurrDeltaTimeIgnored / 1000.0f), m_CurrDeltaTimeIgnored ) + "\n" +
