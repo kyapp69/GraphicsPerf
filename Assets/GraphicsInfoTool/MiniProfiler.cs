@@ -227,17 +227,17 @@ public class MiniProfiler : MonoBehaviour
 			//Memory =========================================================
 			long num1 = UnityEngine.Profiling.Profiler.GetAllocatedMemoryForGraphicsDriver() / 1024 / 1024;
 			long num2 = UnityEngine.Profiling.Profiler.GetTotalAllocatedMemoryLong() / 1024 / 1024;
-			long num3 = UnityEngine.Profiling.Profiler.GetTempAllocatorSize() / 1024 / 1024;
-			long num4 = UnityEngine.Profiling.Profiler.GetTotalReservedMemoryLong() / 1024 / 1024;
-			long num5 = UnityEngine.Profiling.Profiler.GetTotalUnusedReservedMemoryLong() / 1024 / 1024;
+			long num3 = UnityEngine.Profiling.Profiler.GetTotalReservedMemoryLong() / 1024 / 1024;
+			long num4 = UnityEngine.Profiling.Profiler.GetTotalUnusedReservedMemoryLong() / 1024 / 1024;
+			long num5 = UnityEngine.Profiling.Profiler.GetTempAllocatorSize() / 1024 / 1024;
 
 			GUILayout.BeginHorizontal();
 			GUILayout.Label(
 				"Allocated Mem For GfxDriver\n"+
 				"Total Allocated Mem\n"+
-				"Temp Allocator Size\n"+
 				"Total Reserved Mem\n"+
-				"Total Unused Reserved Mem\n"
+				"Total Unused Reserved Mem\n"+
+                "Temp Allocator Size\n"
 				);
 
 			GUILayout.Label(
