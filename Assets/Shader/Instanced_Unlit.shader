@@ -1,5 +1,4 @@
-﻿
-Shader "FTPCustom/Instancing/Unlit fixed"
+﻿Shader "GfxP/Instanced Unlit"
 {
 	Properties
 	{
