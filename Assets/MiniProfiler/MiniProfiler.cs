@@ -28,9 +28,6 @@ public class MiniProfiler : MonoBehaviour
     private float m_SampleAvgDeltaTimeIgnored;
 	private int sampleStatus = -1;
 
-
-
-
     internal class RecorderEntry
     {
         public bool ignore;
@@ -47,9 +44,20 @@ public class MiniProfiler : MonoBehaviour
     RecorderEntry[] recordersList =
     {
         new RecorderEntry() { ignore = true, name="EditorOverhead" },
-        new RecorderEntry() { ignore = false, name="Gfx.WaitForPresent" },
 		new RecorderEntry() { ignore = true, name="WaitForTargetFPS" },
 		new RecorderEntry() { ignore = true, name="GUI.Repaint" },
+        new RecorderEntry() { ignore = false, name="Gfx.WaitForPresent" },
+        new RecorderEntry() { ignore = false, name="Physics.Processing" },
+        new RecorderEntry() { ignore = false, name="Render.OpaqueGeometry" },
+        new RecorderEntry() { ignore = false, name="RenderDeferred.Lighting" },
+        new RecorderEntry() { ignore = false, name="Shadows.PrepareShadowmap" },
+        new RecorderEntry() { ignore = false, name="Render.LineOrTrail" },
+        new RecorderEntry() { ignore = false, name="ParticleSystem.Draw" },
+        new RecorderEntry() { ignore = false, name="ParticleSystem.WaitforPreviousRenderingToFinish" },
+        new RecorderEntry() { ignore = false, name="ParticleSystem.EndUpdateAll" },
+        new RecorderEntry() { ignore = false, name="Culling" },
+        new RecorderEntry() { ignore = false, name="CullResults.CreateSharedRendererScene" },
+        new RecorderEntry() { ignore = false, name="DestroyCullResults" }
 		//new RecorderEntry() { ignore = true, name="MiniProfiler.Update()" }
     };
 
@@ -141,7 +149,7 @@ public class MiniProfiler : MonoBehaviour
     {
         if (m_Enable)
         {
-			GUI.skin.label.fontSize = 17;
+			GUI.skin.label.fontSize = 16;
 			GUI.skin.box.normal.background = bktex;
 			GUI.backgroundColor = new Color(0, 0, 0, .80f);
 			GUI.color = new Color(1, 1, 1, 1);
@@ -165,6 +173,10 @@ public class MiniProfiler : MonoBehaviour
                 "OS : \n"+
                 "CPU : \n"+
                 "GPU : \n"+
+                #if UNITY_EDITOR
+                "GraphicsJob : \n"+
+                #endif
+                "Multi-thread : \n"+
                 //"GPU Version : \n"+
                 "Platform / API : \n"
                 );
@@ -178,6 +190,10 @@ public class MiniProfiler : MonoBehaviour
                 SystemInfo.operatingSystem + "\n"+
                 SystemInfo.processorType + "\n"+
                 SystemInfo.graphicsDeviceName + "\n"+
+                #if UNITY_EDITOR
+                UnityEditor.PlayerSettings.graphicsJobMode.ToString() + "\n"+
+                #endif
+                SystemInfo.graphicsMultiThreaded + "\n"+
                 //SystemInfo.graphicsDeviceVersion + "\n"+
                 Application.platform.ToString() + " / "+ SystemInfo.graphicsDeviceType + "\n"
                 );
@@ -194,7 +210,7 @@ public class MiniProfiler : MonoBehaviour
 			);
 
 			//Real FPS============================================================
-            GUI.skin.label.fontSize = 17;
+            GUI.skin.label.fontSize = 16;
 			GUILayout.Label(
 			"<b>Current FPS - Ignored*</b> : "+
 			System.String.Format("{0:F2} FPS ({1:F2}ms)", 1.0f / (m_CurrDeltaTimeIgnored / 1000.0f), m_CurrDeltaTimeIgnored ) + "\n" +
@@ -221,6 +237,10 @@ public class MiniProfiler : MonoBehaviour
                 {
                     colh = "";
                     colt = "";
+                }
+                else if(recordersList[i].avgTime >=0.1f)
+                {
+                    colh = "<color=#ff0>";
                 }
 
 				sName       += colh + recordersList[i].name + colt +"\n";
