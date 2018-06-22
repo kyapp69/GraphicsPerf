@@ -27,6 +27,11 @@ public class RandomObjects : MonoBehaviour
 		if(renderers==null) UpdateList();
 		if(renderers==null) return;
 
+		StartCoroutine("AssignMaterial");
+	}
+
+	IEnumerator AssignMaterial() 
+	{
 		for(int i = 0; i <renderers.Length; i++)
 		{
 			//Make instance material
@@ -44,8 +49,7 @@ public class RandomObjects : MonoBehaviour
 			mat.SetColor("_Color", col );
 			colid+=0.05f;
 		}
-
+		yield return null;
 	}
-
 
 }

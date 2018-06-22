@@ -11,6 +11,7 @@ public class MiniProfiler : MonoBehaviour
     public bool m_Enable = true;
 	public Texture2D bktex;
 
+    private string currentSceneName;
     private int frameCount = 0;
     private const int kAverageFrameCount = 32;
     private float m_AccDeltaTime;
@@ -82,12 +83,21 @@ public class MiniProfiler : MonoBehaviour
 		m_SampleAccDeltaTimeIgnored = 0;
 		m_SampleAvgDeltaTimeIgnored = 0;
 		sampleStatus = 0;
+
+        currentSceneName = SceneManager.GetActiveScene().name;
     }
 
+    private bool captured = false;
     void Update()
     {
         if (m_Enable)
         {
+            if(sampleStatus == 2 && !captured) //Put it here to prevent 1 frame delay
+            {
+                ScreenCepture();
+                captured = true;
+            }
+
             // get timing & update average accumulators
             for (int i = 0; i < recordersList.Length; i++)
             {
@@ -143,6 +153,8 @@ public class MiniProfiler : MonoBehaviour
             }
         }
 
+
+
     }
 
     void OnGUI()
@@ -182,7 +194,7 @@ public class MiniProfiler : MonoBehaviour
                 );
 
             GUILayout.Label(
-                SceneManager.GetActiveScene().name+"\n"+
+                currentSceneName+"\n"+
                 Screen.width+" x "+Screen.height+"\n"+
                 QualitySettings.vSyncCount+"\n"+
                 Application.unityVersion + "\n"+
@@ -308,6 +320,17 @@ public class MiniProfiler : MonoBehaviour
     }
 
     //========Scene Management============
+    public void ScreenCepture()
+    {
+        //Screen capture
+       // if ( Input.GetKeyDown(KeyCode.F9))
+       // {
+            //Scene scene = SceneManager.GetActiveScene();
+            string path = "screenshot_"+currentSceneName+"_"+SystemInfo.graphicsDeviceType+"_"+System.DateTime.Now.ToString("dd-mm-yyyy-hh-mm-ss")+".PNG";
+            ScreenCapture.CaptureScreenshot(path);
+        //}
+    }
+
     public void NextScene()
     {
         int sceneIndex = SceneManager.GetActiveScene().buildIndex;
