@@ -58,7 +58,8 @@ public class MiniProfiler : MonoBehaviour
         new RecorderEntry() { ignore = false, name="ParticleSystem.EndUpdateAll" },
         new RecorderEntry() { ignore = false, name="Culling" },
         new RecorderEntry() { ignore = false, name="CullResults.CreateSharedRendererScene" },
-        new RecorderEntry() { ignore = false, name="DestroyCullResults" }
+        new RecorderEntry() { ignore = false, name="DestroyCullResults" },
+        new RecorderEntry() { ignore = false, name="Compute.Dispatch" }
 		//new RecorderEntry() { ignore = true, name="MiniProfiler.Update()" }
     };
 
@@ -114,6 +115,7 @@ public class MiniProfiler : MonoBehaviour
             {
                 if(recordersList[i].ignore) m_CurrDeltaTimeIgnored -= recordersList[i].time;
             }
+            m_CurrDeltaTimeIgnored = Mathf.Max(0,m_CurrDeltaTimeIgnored);//prevent negative
 			m_AccDeltaTimeIgnored += m_CurrDeltaTimeIgnored / 1000.0f;
 
 			//My own sampling
