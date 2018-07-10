@@ -14,24 +14,23 @@
 	{
     	Pass 
 		{
-			Tags { "DisableBatching " = "True" }
+			Tags { "DisableBatching" = "True" }
      
     		CGPROGRAM
     		#pragma target 4.6
      
     		#pragma vertex VS
     		#pragma fragment PS
-
 			#ifdef UNITY_CAN_COMPILE_TESSELLATION
 				#pragma hull HS
 				#pragma domain DS
 			#endif
      
-    		//#include "UnityCG.cginc"
+    		#include "UnityCG.cginc"
 			float _VDist;
     		float _TessEdge;
 			float _Freq;
-			uniform fixed4 _FillColor;
+			float4 _FillColor;
 
     		struct VS_In
     		{
@@ -41,7 +40,11 @@
      
     		struct HS_In
     		{
-        		float4 pos   : INTERNALTESSPOS;
+				//#if SHADER_API_VULKAN
+				float3 pos   : INTERNALTESSPOS; //Vulkan wants it to be float3
+				//#else
+        		//float4 pos   : INTERNALTESSPOS;
+				//#endif
 				float4 nor : NORMAL;
     		};
      
@@ -55,7 +58,11 @@
      
     		struct HS_Out
     		{
-        		float4 pos    : INTERNALTESSPOS;
+				//#if SHADER_API_VULKAN
+				//float4 pos   : POS;
+				//#else
+        		float4 pos   : INTERNALTESSPOS;
+				//#endif
 				float4 nor : NORMAL;
     		};
 
@@ -74,7 +81,7 @@
     		HS_In VS( VS_In i )
     		{
         		HS_In o;
-				o.pos = i.vertex;
+				o.pos = i.vertex.xyz;
 				o.nor = i.nor;
         		return o;
     		}
@@ -96,11 +103,11 @@
 				HS_Out HS( InputPatch<HS_In, 3> i, uint uCPID : SV_OutputControlPointID )
 				{
 					HS_Out o = (HS_Out)0;
-					o.pos = i[uCPID].pos;
+					o.pos = float4(i[uCPID].pos,1);
 					o.nor = i[uCPID].nor;
 					return o;
 				}
-		
+
 				[UNITY_domain("tri")]
 				DS_Out DS( HS_ConstantOut HSConstantData, 
 							const OutputPatch<HS_Out, 3> i, 
