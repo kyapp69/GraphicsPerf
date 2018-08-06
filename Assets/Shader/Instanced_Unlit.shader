@@ -29,9 +29,8 @@
 				UNITY_VERTEX_INPUT_INSTANCE_ID
 			};
 
-			half4 _Color;
-
 			UNITY_INSTANCING_BUFFER_START (MyProperties)
+			half4 _Color;
             UNITY_INSTANCING_BUFFER_END(MyProperties)
 			
 			v2f vert (appdata v)
